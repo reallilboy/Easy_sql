@@ -1,0 +1,171 @@
+MySQL is an open-source relational database management system . Its name is a combination of "My", the name of co-founder Michael Widenius's daughter My,and "SQL", the acronym for Structured Query Language. A relational database organizes data into one or more data tables in which data may be related to each other; these relations help structure the data. SQL is a language that programmers use to create, modify and extract data from the relational database, as well as control user access to the database. In addition to relational databases and SQL, an RDBMS like MySQL works with an operating system to implement a relational database in a computer's storage system, manages users, allows for network access and facilitates testing database integrity and creation of backups.
+*******************************************************************
+Here is a simple query that asks the server to tell you its version number and the current date. Type it in as shown here following the mysql> prompt and press Enter:
+
+MariaDB [(none)]> SELECT VERSION(), CURRENT_DATE;
++----------------------------------+--------------+
+1 row in set (0.000 sec)
+*******************************************************************
+Keywords may be entered in any lettercase. The following queries are equivalent:
+mysql> SELECT VERSION(), CURRENT_DATE;
+mysql> select version(), current_date;
+mysql> SeLeCt vErSiOn(), current_DATE;
+
+*******************************************************************
+
+MariaDB> select user();
++----------------+
+| user()         |
++----------------+
+| root@localhost |
++----------------+
+1 row in set (0.000 sec)
+
+*******************************************************************
+
+Use the SHOW statement to find out what databases currently exist on the server:
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| learnsql           |
+| mysql              |
+| performance_schema |
+| sql_hr             |
+| sql_inventory      |
+| sql_invoicing      |
+| sql_store          |
+| sys                |
++--------------------+
+9 rows in set (0.007 sec)
+*******************************************************************
+
+If the learnsql database exists, try to access it:
+
+MariaDB [(none)]> use learnsql;
+
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+*******************************************************************
+
+If the administrator creates your database for you when setting up your permissions, you can begin using it. Otherwise, you need to create it yourself
+
+MariaDB [learnsql]> create database <your database name>;
+*******************************************************************
+Creating a database does not select it for use; you must do that explicitly. To make menagerie the current database, use this statement:
+
+MariaDB [learnsql]> use <your database name>;
+
+******************************************************************
+Creating the database is the easy part, but at this point it is empty, as SHOW TABLES tells you:
+
+MariaDB [learnsql]> show tables;
++--------------------+
+| Tables_in_learnsql |
++--------------------+
+|                    |
++--------------------+
+1 row in set (0.001 sec)
+*******************************************************************
+Use a CREATE TABLE statement to specify the layout of your table:
+MariaDB [learnsql]> CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),       
+species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
+___________________________________________________________________
+VARCHAR meaining: or variable character field is a set of character data of indeterminate length.
+___________________________________________________________________
+Query OK, 0 rows affected (0.011 sec)
+MariaDB [learnsql]> show tables
+    -> ;
++--------------------+
+| Tables_in_learnsql |
++--------------------+
+| people             |
+| pet                |
++--------------------+
+2 rows in set (0.001 sec)
+*******************************************************************
+To verify that your table was created the way you expected, use a DESCRIBE statement:
+MariaDB [learnsql]> describe pet;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| name    | varchar(20) | YES  |     | NULL    |       |
+| owner   | varchar(20) | YES  |     | NULL    |       |
+| species | varchar(20) | YES  |     | NULL    |       |
+| sex     | char(1)     | YES  |     | NULL    |       |
+| birth   | date        | YES  |     | NULL    |       |
+| death   | date        | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+6 rows in set (0.006 sec)
+*******************************************************************
+
+                   <Loading Data into a Table>
+
+When you want to add new records one at a time, the INSERT statement is useful. In its simplest form, you supply values for each column, in the order in which the columns were listed in the CREATE TABLE statement. Suppose that Diane gets a new hamster named “Puffball.” You could add a new record using an INSERT statement like this:
+MariaDB [learnsql]> INSERT INTO pet        VALUES ('Puffball','Diane','hamster','f','1999-03-30',NULL);
+Query OK, 1 row affected (0.006 sec)
+*******************************************************************
+NOTE:if select anyone in pet table use the asterisk *
+
+MariaDB [learnsql]> select * from pet;
++----------+-------+---------+------+------------+-------+
+| name     | owner | species | sex  | birth      | death |
++----------+-------+---------+------+------------+-------+
+| Puffball | Diane | hamster | f    | 1999-03-30 | NULL  |
++----------+-------+---------+------+------------+-------+
+1 row in set (0.000 sec)
+*******************************************************************
+
+The SELECT statement is used to pull information from a table. The general form of the statement is:
+
+SELECT what_to_select
+FROM which_table
+WHERE conditions_to_satisfy;
+*****************************************************************
+You may have noticed in the preceding examples that the result rows are displayed in no particular order. It is often easier to examine query output when the rows are sorted in some meaningful way. To sort a result, use an ORDER BY clause.
+
+Here are animal birthdays, sorted by date:
+
+MariaDB [learnsql]>SELECT name, birth FROM pet ORDER BY birth;
++----------+------------+
+| name     | birth      |
++----------+------------+
+| Buffy    | 1989-05-13 |
+| Bowser   | 1989-08-31 |
+| Fang     | 1990-08-27 |
+| Fluffy   | 1993-02-04 |
+| Claws    | 1994-03-17 |
+| Slim     | 1996-04-29 |
+| Whistler | 1997-12-09 |
+| Chirpy   | 1998-09-11 |
+| Puffball | 1999-03-30 |
++----------+------------+
+
+*******************************************************************
+MariaDB [learnsql]>SELECT 1 IS NULL, 1 IS NOT NULL;
++-----------+---------------+
+| 1 IS NULL | 1 IS NOT NULL |
++-----------+---------------+
+|         0 |             1 |
++-----------+---------------|
+
+*******************************************************************SQL pattern matching enables you to use _ to match any single character and % to match an arbitrary number of characters (including zero characters). In MySQL, SQL patterns are case-insensitive by default. Some examples are shown here. Do not use = or <> when you use SQL patterns. Use the LIKE or NOT LIKE comparison operators instead.
+
+To find names beginning with b:
+
+MariaDB [learnsql]>SELECT * FROM pet WHERE name LIKE 'b%';
++--------+--------+---------+------+------------+------------+
+| name   | owner  | species | sex  | birth      | death      |
++--------+--------+---------+------+------------+------------+
+| Buffy  | Harold | dog     | f    | 1989-05-13 | NULL       |
+| Bowser | Diane  | dog     | m    | 1989-08-31 | 1995-07-29 |
++--------+--------+---------+------+------------+------------+
+
+
+
+
+

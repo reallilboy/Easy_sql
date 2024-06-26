@@ -31,7 +31,7 @@ INSERT INTO `payment_methods` VALUES (1,'Credit Card');
 INSERT INTO `payment_methods` VALUES (2,'Cash');
 INSERT INTO `payment_methods` VALUES (3,'PayPal');
 INSERT INTO `payment_methods` VALUES (4,'Wire Transfer');
-
+--VARCHAR meaining: or variable character field is a set of character data of indeterminate length.
 CREATE TABLE `clients` (
   `client_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
